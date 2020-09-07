@@ -1,16 +1,45 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:shopy_firebase/extension/extension.dart';
+import 'package:shopy_firebase/Model/Items.dart';
+import 'package:shopy_firebase/Provider/ProviderCart.dart';
 
 class CustomWidgets {
-  Widget iconButton(IconData iconData, Function function) {
-    return IconButton(
-            icon: Icon(
-              iconData,
-              size: 28,
-              color: Colors.black,
+  //appbar icon
+  Widget iconButton(IconData iconData, Function function, String count) {
+    return (iconData != Icons.shopping_cart)
+        ? Badge(
+            showBadge: false,
+            child: Card(
+              shape: StadiumBorder(),
+              elevation: 5.0,
+              child: CircleAvatar(
+                backgroundColor: Colors.white.withOpacity(0.1),
+                child: IconButton(
+                  icon: Icon(iconData),
+                  onPressed: function,
+                  color: Colors.black,
+                ),
+              ),
             ),
-            onPressed: function)
-        .circleAvatar();
+          )
+        : Card(
+            shape: StadiumBorder(),
+            elevation: 5.0,
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Badge(
+                showBadge: true,
+                padding: EdgeInsets.all(6),
+                badgeColor: orangeAccent,
+                badgeContent: Text(count),
+                child: IconButton(
+                  icon: Icon(iconData),
+                  onPressed: function,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          );
   }
 }
 
@@ -20,6 +49,8 @@ final orangeAccent = Colors.orangeAccent[700];
 //Detail Screen Widgets
 
 class TabbarDetailPage extends StatefulWidget {
+  final Items items;
+  TabbarDetailPage({this.items});
   _GameTopChartsTabsState createState() => _GameTopChartsTabsState();
 }
 
@@ -91,7 +122,8 @@ class _GameTopChartsTabsState extends State<TabbarDetailPage>
               child: Padding(
                 padding: const EdgeInsets.only(top: 20, right: 15, left: 15),
                 child: Text(
-                  "Is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. ",
+                  //items desc
+                  widget.items.desc,
                   style: TextStyle(color: Colors.grey, fontSize: 15),
                 ),
               ),

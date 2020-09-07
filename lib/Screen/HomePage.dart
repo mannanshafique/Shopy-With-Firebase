@@ -1,109 +1,171 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopy_firebase/Model/Items.dart';
+import 'package:shopy_firebase/Provider/ProviderCart.dart';
+import 'package:shopy_firebase/Screen/CheckOutScreen.dart';
 import 'package:shopy_firebase/Screen/DetailScreen.dart';
 import 'package:shopy_firebase/widgets/widgets.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List delegateSearch = [];
+  List<Items> searchClick = [];
+  final List<Items> items = [
+    Items(
+        title: 'Biryani',
+        desc: 'Amazing Tasty biryani for u',
+        img: 'assets/images/img1.png',
+        price: 200),
+    Items(
+        title: 'Kabab',
+        desc: 'Amazing Tasty Kabab for u',
+        img: 'assets/images/img3.jpg',
+        price: 500),
+    Items(
+        title: 'Chapati',
+        desc: 'Amazing Tasty Chapati for u',
+        img: 'assets/images/img5.jpg',
+        price: 20),
+    Items(
+        title: 'Shawarma',
+        desc: 'Amazing Tasty Shawarma for u',
+        img: 'assets/images/img6.jpg',
+        price: 110),
+  ];
+
+  adddata() {
+    for (int i = 0; i < items.length; i++) {
+      delegateSearch.add(items[i].title.toUpperCase());
+      searchClick.add(items[i]);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    adddata();
+  }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      // backgroundColor: Colors.grey[200],
-      appBar: _appbar(),
-      body: SafeArea(
-          child: SingleChildScrollView(
-        child: Container(
-          margin: EdgeInsets.all(10),
-          // height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xfffbfbfb),
-                Color(0xfff7f7f7),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+    return Consumer<ProviderCart>(
+      builder: (context, providerCart, child) {
+        return Scaffold(
+          key: _scaffoldKey, //drawer
+          drawer: _drawer(context, providerCart.count.toString()),
+          // backgroundColor: Colors.grey[200],
+          appBar: _appbar(providerCart, context, () {
+            _scaffoldKey.currentState.openDrawer();
+          }),
+          body: SafeArea(
+              child: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.all(10),
+              // height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xfffbfbfb),
+                    Color(0xfff7f7f7),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    children: [
+                      Text(
+                        'Lets Eat!',
+                        style: TextStyle(
+                            color: blackColor,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Icon(Icons.local_bar)
+                    ],
+                  ),
+                  //height: MediaQuery.of(context).size.height * 0.3,
+                  _accentCard(),
                   Text(
-                    'Lets Eat!',
+                    'What are you craving?',
                     style: TextStyle(
                         color: blackColor,
                         fontSize: 22,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.w600),
                   ),
-                  Icon(Icons.local_bar)
+                  SizedBox(
+                    height: 1,
+                  ),
+                  SizedBox(
+                      height: 130,
+                      // width: width,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 40,
+                          itemBuilder: (context, index) {
+                            return _categories();
+                          })),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    height: height * 0.4,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return _popularRes(context, items[index]);
+                        }),
+                  ),
                 ],
               ),
-              //height: MediaQuery.of(context).size.height * 0.3,
-              _accentCard(),
-              Text(
-                'What are you craving?',
-                style: TextStyle(
-                    color: blackColor,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600),
-              ),
-              SizedBox(
-                height: 1,
-              ),
-              SizedBox(
-                  height: 130,
-                  // width: width,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 40,
-                      itemBuilder: (context, index) {
-                        return _categories();
-                      })),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                height: height * 0.4,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 40,
-                    itemBuilder: (context, index) {
-                      return _popularRes(context);
-                    }),
-              ),
-            ],
-          ),
-        ),
-      )),
+            ),
+          )),
+        );
+      },
     );
   }
 
-  Widget _appbar() {
+  Widget _appbar(
+      ProviderCart providerCart, BuildContext context, Function function) {
     return AppBar(
       elevation: 0.0,
       backgroundColor: Colors.transparent,
       actions: [
         Padding(
-          padding: EdgeInsets.all(2),
-          child: CustomWidgets().iconButton(Icons.search, () {
-            print('hello Search');
-          }),
-        ),
+            padding: EdgeInsets.only(top: 10),
+            child: CustomWidgets().iconButton(Icons.search, () {
+              print('Search');
+              showSearch(
+                  context: context,
+                  delegate: Searching(delegateSearch, searchClick));
+            }, '')),
         Padding(
-          padding: EdgeInsets.all(2),
-          child: CustomWidgets().iconButton(Icons.shopping_cart, () {
-            print('hello shoping cart');
-          }),
-        ),
+            padding: EdgeInsets.only(right: 12, top: 10),
+            child: CustomWidgets().iconButton(Icons.shopping_cart, () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CheckOutScreen()));
+            }, providerCart.count.toString())),
+        SizedBox(
+          width: 4,
+        )
       ],
       leading: Padding(
-        padding: EdgeInsets.all(3),
+        padding: EdgeInsets.only(top: 10, left: 3),
         child: CustomWidgets().iconButton(Icons.person, () {
-          print('hello Search');
-        }),
+          function();
+        }, ''),
       ),
       centerTitle: true,
       title: Column(
@@ -131,8 +193,6 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-  //COlored Card widget
 
   Widget _accentCard() {
     return Stack(
@@ -198,8 +258,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-// Categoriees horizontal
-
   Widget _categories() {
     return Container(
         // margin: EdgeInsets.all(5),
@@ -235,16 +293,145 @@ class HomePage extends StatelessWidget {
         ));
   }
 
-//Popular Resturants
+  Widget _drawer(BuildContext context, String count) {
+    return Container(
+      // We add COntainer bcz customiz width
+      width: MediaQuery.of(context).size.width * 0.56,
+      child: Drawer(
+        child: ListView(
+          padding: EdgeInsets.all(0.0),
+          children: [
+            _headerDrawer(),
+            _createDrawerItem(
+                icon: Icons.home,
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
+                },
+                text: 'Home'),
+            _createDrawerItem(
+                icon: Icons.account_circle,
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
+                },
+                text: 'My Account'),
+            _createDrawerItem(
+                icon: Icons.format_list_numbered,
+                onTap: () {},
+                text: 'My Order'),
+            _createDrawerShoppingItem(
+                icon: Icons.shopping_cart,
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
+                },
+                text: 'Shoping Cart',
+                count: count),
+            _createDrawerItem(
+              icon: Icons.favorite,
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
+              },
+              text: 'Favourite',
+            ),
+            _createDrawerItem(
+                icon: Icons.share,
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomePage()));
+                },
+                text: 'invit Friends'),
+            Divider(),
+            SizedBox(
+              height: 40,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-  Widget _popularRes(BuildContext context) {
+  Widget _headerDrawer() {
+    return UserAccountsDrawerHeader(
+        otherAccountsPictures: [
+          CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: IconButton(icon: Icon(Icons.remove_circle), onPressed: null),
+          )
+        ],
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white,
+              orangeAccent,
+            ],
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+          ),
+        ),
+        currentAccountPicture: CircleAvatar(
+            //Account Pic
+            backgroundImage: AssetImage('assets/images/img5.jpg'),
+            backgroundColor: Colors.white,
+            child: null),
+        accountName: Text('data'),
+        accountEmail: Text('@gmail.com'));
+  }
+
+  Widget _createDrawerItem({
+    IconData icon,
+    String text,
+    GestureTapCallback onTap,
+  }) {
+    return ListTile(
+      title: Row(
+        children: <Widget>[
+          Icon(icon),
+          Padding(
+            padding: EdgeInsets.only(left: 20.0),
+            child: Text(text),
+          ),
+        ],
+      ),
+      onTap: onTap,
+    );
+  }
+
+  Widget _createDrawerShoppingItem(
+      {IconData icon, String text, GestureTapCallback onTap, String count}) {
+    return ListTile(
+      title: Row(
+        children: <Widget>[
+          Icon(icon),
+          Padding(
+            padding: EdgeInsets.only(left: 20.0),
+            child: Text(text),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 30.0),
+            child: Text(
+              count,
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+      onTap: onTap,
+    );
+  }
+
+  Widget _popularRes(BuildContext context, Items items) {
     return AspectRatio(
       aspectRatio: 0.76 / 1,
       child: Container(
         child: GestureDetector(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return DetailScreen();
+              return DetailScreen(
+                items: items,
+              );
             }));
           },
           child: Card(
@@ -259,9 +446,14 @@ class HomePage extends StatelessWidget {
                     padding: EdgeInsets.all(8),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        'assets/images/img6.jpg',
-                        fit: BoxFit.fill,
+                      child: Hero(
+                        tag: items.title,
+                        child: Image.asset(
+                          items.img,
+                          // items image
+                          // 'assets/images/img6.jpg',
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                   ),
@@ -272,7 +464,8 @@ class HomePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Hello',
+                          //item title
+                          items.title,
                           style: TextStyle(
                               color: blackColor,
                               fontSize: 18,
@@ -283,7 +476,8 @@ class HomePage extends StatelessWidget {
                           spacing: 5.0,
                           children: [
                             Text(
-                              'Its owsome product dudefdsdfsdf',
+                              //item dec
+                              items.desc,
                               maxLines: 1,
                               style: TextStyle(
                                 color: blackColor,
@@ -300,5 +494,101 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// Search Delegeate
+class Searching extends SearchDelegate<String> {
+  List<Items> items;
+  List mylist;
+  Searching(this.mylist, this.items);
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = "";
+        },
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        icon: AnimatedIcon(
+            icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
+        onPressed: () {
+          close(context, null);
+        });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {}
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    var searchlist = query.isEmpty
+        ? mylist
+        : mylist.where((p) => p.startsWith(query.toUpperCase())).toList();
+    // print(searchlist);
+    return searchlist.isEmpty
+        ? Padding(
+            padding: EdgeInsets.only(left: 70, top: 25),
+            child: Text(
+              'No item Found',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0),
+            ),
+          )
+        : ListView.builder(
+            itemCount: searchlist.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailScreen(
+                                  items: items[index],
+                                )));
+                  },
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: AssetImage(items[index].img),
+                  ),
+
+                  // leading: ConstrainedBox(     //For Flags
+                  //     constraints: BoxConstraints(
+                  //       minWidth: 44,
+                  //       minHeight: 44,
+                  //       maxWidth: 64,
+                  //       maxHeight: 64,
+                  //     ),
+                  //     child: Image(image: NetworkImage(searchlist[index]))),
+                  subtitle: Text(items[index].desc),
+                  trailing: Text(
+                    '\$ ${items[index].price.toString()}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        .copyWith(color: orangeAccent, fontSize: 18),
+                  ),
+                  title: RichText(
+                    text: TextSpan(
+                        text: searchlist[index].substring(0, query.length),
+                        style: TextStyle(
+                            color: orangeAccent, fontWeight: FontWeight.bold),
+                        children: [
+                          TextSpan(
+                              text: searchlist[index].substring(query.length),
+                              style: TextStyle(color: Colors.black))
+                        ]),
+                  ));
+            });
   }
 }

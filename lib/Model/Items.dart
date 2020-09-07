@@ -7,4 +7,12 @@ class Items {
   String desc;
 
   Items({this.title, this.price, this.img, this.desc});
+
+  String getTitle() {
+    return this.title;
+  }
+
+  void setTitle(String title) {
+    this.title = title;
+  }
 }
