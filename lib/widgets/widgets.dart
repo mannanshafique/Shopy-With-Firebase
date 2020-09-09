@@ -1,7 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:shopy_firebase/Model/Items.dart';
-import 'package:shopy_firebase/Provider/ProviderCart.dart';
 
 class CustomWidgets {
   //appbar icon

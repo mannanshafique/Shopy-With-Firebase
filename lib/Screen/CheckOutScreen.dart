@@ -63,7 +63,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                     leading: CircleAvatar(
                                       backgroundImage: AssetImage(items.img),
                                     ),
-                                    title: Text(items.title),
+                                    title: Text('${items.title}'),
                                     subtitle: Text(items.desc),
                                     trailing: IconButton(
                                       icon: Icon(Icons.delete),

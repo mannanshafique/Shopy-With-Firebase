@@ -4,6 +4,7 @@ import 'package:shopy_firebase/Model/Items.dart';
 import 'package:shopy_firebase/Provider/ProviderCart.dart';
 import 'package:shopy_firebase/Screen/CheckOutScreen.dart';
 import 'package:shopy_firebase/Screen/DetailScreen.dart';
+import 'package:shopy_firebase/SearchDelegate/searchDelegate.dart';
 import 'package:shopy_firebase/widgets/widgets.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,48 +13,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List delegateSearch = [];
-  List<Items> searchClick = [];
-  final List<Items> items = [
-    Items(
-        title: 'Biryani',
-        desc: 'Amazing Tasty biryani for u',
-        img: 'assets/images/img1.png',
-        price: 200),
-    Items(
-        title: 'Kabab',
-        desc: 'Amazing Tasty Kabab for u',
-        img: 'assets/images/img3.jpg',
-        price: 500),
-    Items(
-        title: 'Chapati',
-        desc: 'Amazing Tasty Chapati for u',
-        img: 'assets/images/img5.jpg',
-        price: 20),
-    Items(
-        title: 'Shawarma',
-        desc: 'Amazing Tasty Shawarma for u',
-        img: 'assets/images/img6.jpg',
-        price: 110),
-  ];
-
-  adddata() {
-    for (int i = 0; i < items.length; i++) {
-      delegateSearch.add(items[i].title.toUpperCase());
-      searchClick.add(items[i]);
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    adddata();
-  }
-
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    // final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Consumer<ProviderCart>(
       builder: (context, providerCart, child) {
@@ -146,10 +109,7 @@ class _HomePageState extends State<HomePage> {
         Padding(
             padding: EdgeInsets.only(top: 10),
             child: CustomWidgets().iconButton(Icons.search, () {
-              print('Search');
-              showSearch(
-                  context: context,
-                  delegate: Searching(delegateSearch, searchClick));
+              showSearch(context: context, delegate: Searching(items));
             }, '')),
         Padding(
             padding: EdgeInsets.only(right: 12, top: 10),
@@ -494,101 +454,5 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-}
-
-// Search Delegeate
-class Searching extends SearchDelegate<String> {
-  List<Items> items;
-  List mylist;
-  Searching(this.mylist, this.items);
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = "";
-        },
-      )
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-        icon: AnimatedIcon(
-            icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
-        onPressed: () {
-          close(context, null);
-        });
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {}
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    var searchlist = query.isEmpty
-        ? mylist
-        : mylist.where((p) => p.startsWith(query.toUpperCase())).toList();
-    // print(searchlist);
-    return searchlist.isEmpty
-        ? Padding(
-            padding: EdgeInsets.only(left: 70, top: 25),
-            child: Text(
-              'No item Found',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0),
-            ),
-          )
-        : ListView.builder(
-            itemCount: searchlist.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetailScreen(
-                                  items: items[index],
-                                )));
-                  },
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    backgroundImage: AssetImage(items[index].img),
-                  ),
-
-                  // leading: ConstrainedBox(     //For Flags
-                  //     constraints: BoxConstraints(
-                  //       minWidth: 44,
-                  //       minHeight: 44,
-                  //       maxWidth: 64,
-                  //       maxHeight: 64,
-                  //     ),
-                  //     child: Image(image: NetworkImage(searchlist[index]))),
-                  subtitle: Text(items[index].desc),
-                  trailing: Text(
-                    '\$ ${items[index].price.toString()}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        .copyWith(color: orangeAccent, fontSize: 18),
-                  ),
-                  title: RichText(
-                    text: TextSpan(
-                        text: searchlist[index].substring(0, query.length),
-                        style: TextStyle(
-                            color: orangeAccent, fontWeight: FontWeight.bold),
-                        children: [
-                          TextSpan(
-                              text: searchlist[index].substring(query.length),
-                              style: TextStyle(color: Colors.black))
-                        ]),
-                  ));
-            });
   }
 }
