@@ -16,6 +16,7 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  int incr = 0;
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -72,7 +73,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           })),
                   Positioned(
                       right: 10.0,
-                      top: height * 0.256,
+                      top: height * 0.25,
                       child:
                           CustomWidgets().iconButton(Icons.shopping_cart, () {
                         Navigator.push(
@@ -82,24 +83,82 @@ class _DetailScreenState extends State<DetailScreen> {
                       }, providerCart.count.toString())),
                   Positioned(
                       right: 5.0,
-                      top: height * 0.32,
-                      child: FlatButton.icon(
-                        splashColor: Colors.orange[100],
-                        label: Text(
-                          'Add to Cart',
-                          style: TextStyle(
-                              color: blackColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500),
+                      left: width * 0.14,
+                      top: height * 0.31,
+                      bottom: height * 0.60,
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Row(
+                          children: [
+                            // _incbutton(Icons.add),
+                            // Container(
+                            //   color: Colors.white,
+                            //   child: Text(
+                            //     '1',
+                            //     style: TextStyle(fontSize: 20),
+                            //   ),
+                            // ),
+                            // _incbutton(Icons.add),
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Row(
+                                  children: [
+                                    _incbutton(Icons.remove, () {
+                                      setState(() {
+                                        if (incr > 0) {
+                                          incr--;
+                                        }
+                                      });
+                                    }),
+                                    Expanded(
+                                      child: Container(
+                                        margin: EdgeInsets.all(0.0),
+                                        padding: EdgeInsets.all(0.0),
+                                        color: Colors.white,
+                                        child: Center(
+                                          child: Text(
+                                            incr.toString(),
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    _incbutton(Icons.add, () {
+                                      setState(() {
+                                        incr++;
+                                      });
+                                    }),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 87,
+                            ),
+                            FlatButton.icon(
+                              splashColor: Colors.orange[100],
+                              label: Text(
+                                'Add to Cart',
+                                style: TextStyle(
+                                    color: blackColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              icon: Icon(
+                                Icons.add,
+                                size: 20,
+                              ),
+                              color: orangeAccent,
+                              onPressed: () {
+                                providerCart.add(widget.items);
+                              },
+                            ),
+                          ],
                         ),
-                        icon: Icon(
-                          Icons.add,
-                          size: 20,
-                        ),
-                        color: orangeAccent,
-                        onPressed: () {
-                          providerCart.add(widget.items);
-                        },
                       )),
                   Positioned(
                       top: height * 0.4,
@@ -151,6 +210,23 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
         ));
       },
+    );
+  }
+
+  Widget _incbutton(IconData iconData, Function function) {
+    return Expanded(
+      child: Card(
+        margin: EdgeInsets.symmetric(vertical: 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        elevation: 10,
+        child: Center(
+          child: IconButton(
+            icon: Icon(iconData),
+            onPressed: function,
+            iconSize: 20,
+          ),
+        ),
+      ),
     );
   }
 }

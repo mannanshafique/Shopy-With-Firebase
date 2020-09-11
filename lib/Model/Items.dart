@@ -19,22 +19,22 @@ class Items {
 final List<Items> items = [
   Items(
       title: 'Biryani',
-      desc: 'Amazing Tasty biryani for u',
+      desc: 'Amazing Tasty biryani ',
       img: 'assets/images/img1.png',
       price: 200),
   Items(
       title: 'Kabab',
-      desc: 'Amazing Tasty Kabab for u',
+      desc: 'Amazing Tasty Kabab ',
       img: 'assets/images/img3.jpg',
       price: 500),
   Items(
       title: 'Chapati',
-      desc: 'Amazing Tasty Chapati for u',
+      desc: 'Amazing Tasty Chapati',
       img: 'assets/images/img5.jpg',
       price: 20),
   Items(
       title: 'Shawarma',
-      desc: 'Amazing Tasty Shawarma for u',
+      desc: 'Amazing Tasty Shawarma',
       img: 'assets/images/img6.jpg',
       price: 110),
 ];

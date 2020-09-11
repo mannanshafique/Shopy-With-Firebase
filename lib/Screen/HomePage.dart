@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopy_firebase/Model/Categorgies.dart';
 import 'package:shopy_firebase/Model/Items.dart';
 import 'package:shopy_firebase/Provider/ProviderCart.dart';
 import 'package:shopy_firebase/Screen/CheckOutScreen.dart';
@@ -75,9 +76,9 @@ class _HomePageState extends State<HomePage> {
                       // width: width,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: 40,
+                          itemCount: listCategory.length,
                           itemBuilder: (context, index) {
-                            return _categories();
+                            return _categories(listCategory[index]);
                           })),
                   SizedBox(
                     height: 5,
@@ -218,39 +219,30 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _categories() {
+  Widget _categories(Categories listCategory) {
     return Container(
+
         // margin: EdgeInsets.all(5),
-        padding: EdgeInsets.all(10),
+        //padding: EdgeInsets.all(10),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              decoration: BoxDecoration(shape: BoxShape.circle),
-              child: Card(
-                  shape: StadiumBorder(),
-                  elevation: 3,
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Icon(
-                      Icons.access_alarm,
-                      size: 40,
-                      color: orangeAccent,
-                    ),
-                  )),
-            ),
-            SizedBox(
-              height: 7,
-            ),
-            Text(
-              'Recipe Name',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400),
-            )
-          ],
-        ));
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: Card(
+              shape: StadiumBorder(),
+              elevation: 3,
+              child: Image.asset(listCategory.img)),
+        ),
+        SizedBox(
+          height: 7,
+        ),
+        Text(
+          listCategory.name,
+          style: TextStyle(
+              color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
+        )
+      ],
+    ));
   }
 
   Widget _drawer(BuildContext context, String count) {
