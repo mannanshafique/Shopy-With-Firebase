@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopy_firebase/Provider/ProviderCart.dart';
+import 'package:shopy_firebase/widgets/widgets.dart';
 
 class CheckOutScreen extends StatefulWidget {
   @override
@@ -58,20 +59,40 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                             : ListView.builder(
                                 itemCount: providerCart.count,
                                 itemBuilder: (context, index) {
+                                  // var items = providerCart.basketItems[index];
                                   var items = providerCart.basketItems[index];
                                   return ListTile(
-                                    leading: CircleAvatar(
-                                      backgroundImage: AssetImage(items.img),
-                                    ),
-                                    title: Text('${items.title}'),
-                                    subtitle: Text(items.desc),
-                                    trailing: IconButton(
-                                      icon: Icon(Icons.delete),
-                                      onPressed: () {
-                                        providerCart.remove(items);
-                                      },
-                                    ),
-                                  );
+                                      leading: CircleAvatar(
+                                        backgroundImage: AssetImage(items.img),
+                                      ),
+                                      title: Text('${items.title}'),
+                                      subtitle: Text(items.quantity.toString() +
+                                          " x " +
+                                          '${items.price.toInt().toString()} \$' +
+                                          " = " +
+                                          ('${items.quantity * items.price.toInt()} \$')
+                                              .toString()),
+                                      trailing: SizedBox(
+                                        width: 150,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            _increButton(Icons.add, () {
+                                              providerCart.updateProduct(
+                                                  items, items.quantity + 1);
+                                            }),
+                                            _increButton(Icons.remove, () {
+                                              providerCart.updateProduct(
+                                                  items, items.quantity - 1);
+                                            }),
+                                            _increButton(Icons.delete, () {
+                                              providerCart.removeProduct(items);
+                                            }),
+                                          ],
+                                        ),
+                                      ));
                                 }),
                       ),
                       SizedBox(
@@ -89,7 +110,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              '\$ ${providerCart.totalPrice}',
+                              '\$ ${providerCart.totalprice}',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5
@@ -106,6 +127,21 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _increButton(IconData iconData, Function function) {
+    return Card(
+      shape: StadiumBorder(),
+      elevation: 4,
+      child: CircleAvatar(
+        backgroundColor: Colors.white,
+        child: IconButton(
+          splashColor: Colors.transparent,
+          icon: Icon(iconData),
+          onPressed: function,
+        ),
+      ),
     );
   }
 }

@@ -32,7 +32,8 @@ dependencies:
   device_preview: ^0.4.8
   badges: ^1.1.1
   provider: ^4.3.2+2
-
+ 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

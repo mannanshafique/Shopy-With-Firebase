@@ -16,7 +16,20 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  int incr = 0;
+  int incr;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      incr = 1;
+    });
+  }
+
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -154,7 +167,9 @@ class _DetailScreenState extends State<DetailScreen> {
                               ),
                               color: orangeAccent,
                               onPressed: () {
-                                providerCart.add(widget.items);
+                                //providerCart.add(widget.items);
+                                providerCart.addProduct(widget.items);
+                                providerCart.updateProduct(widget.items, incr);
                               },
                             ),
                           ],
@@ -189,7 +204,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                       ),
                                       Text(
                                         //items price
-                                        '\$ ${widget.items.price}',
+                                        '\$ ${widget.items.price.toInt()}',
                                         style: TextStyle(
                                             color: orangeAccent,
                                             fontSize: 22,

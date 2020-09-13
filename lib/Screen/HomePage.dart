@@ -8,6 +8,8 @@ import 'package:shopy_firebase/Screen/DetailScreen.dart';
 import 'package:shopy_firebase/SearchDelegate/searchDelegate.dart';
 import 'package:shopy_firebase/widgets/widgets.dart';
 
+import 'UserAccount.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -265,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                 icon: Icons.account_circle,
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                      MaterialPageRoute(builder: (context) => UserAccount()));
                 },
                 text: 'My Account'),
             _createDrawerItem(
