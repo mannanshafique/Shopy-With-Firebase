@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 import 'package:shopy_firebase/Model/Categorgies.dart';
 import 'package:shopy_firebase/Model/Items.dart';
 import 'package:shopy_firebase/Provider/ProviderCart.dart';
@@ -293,8 +294,7 @@ class _HomePageState extends State<HomePage> {
             _createDrawerItem(
                 icon: Icons.share,
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                  Share.share('www.mms.com');
                 },
                 text: 'invit Friends'),
             Divider(),
@@ -316,15 +316,17 @@ class _HomePageState extends State<HomePage> {
           )
         ],
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.white,
-              orangeAccent,
-            ],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-          ),
-        ),
+            image: DecorationImage(
+                image: AssetImage('assets/images/back.jpg'), fit: BoxFit.cover)
+            // gradient: LinearGradient(
+            //   colors: [
+            //     Colors.white,
+            //     orangeAccent,
+            //   ],
+            //   begin: Alignment.topRight,
+            //   end: Alignment.bottomLeft,
+            // ),
+            ),
         currentAccountPicture: CircleAvatar(
             //Account Pic
             backgroundImage: AssetImage('assets/images/img5.jpg'),
